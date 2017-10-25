@@ -72,7 +72,7 @@ class RemoteRpc {
 
     long startTime = System.currentTimeMillis();
     try {
-      HttpResponse httpResponse;
+      HttpResponse httpResponse=null;
       try {
         rpcCount.incrementAndGet();
         ProtoHttpContent payload = new ProtoHttpContent(request);
@@ -92,6 +92,11 @@ class RemoteRpc {
         }
         return httpResponse.getContent();
       } catch (IOException e) {
+        if(httpResponse!=null) {
+          try {
+            httpResponse.disconnect();
+          } catch(IOException e2) {}
+        }
         throw makeException(url, methodName, Code.UNAVAILABLE, "I/O error", e);
       }
     } finally {
