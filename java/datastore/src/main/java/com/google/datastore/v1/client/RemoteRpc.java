@@ -151,6 +151,12 @@ class RemoteRpc {
           String.format(
               "Unable to parse Status protocol buffer: HTTP status code was %s.", httpStatusCode),
           e);
+    } finally {
+      try {
+        content.close();
+      } catch(IOException e) {
+        logger.fine(String.format("closing content stream failed: %s",e));
+      }
     }
 
     Code code = Code.valueOf(rpcStatus.getCode());
